@@ -1,0 +1,10 @@
+{
+    "version": 3,
+    "mappings": "AAEA,MAAM,EAAE,SAAS,EAAE,KAAK;EACtB,AAAA,IAAI,CAAC;IACH,gBAAgB,EAAE,MAAM;GACzB;EAED,AAAA,eAAe,CAAC;IACd,MAAM,EAAE,aAAa;GAKtB;EAND,AAGE,eAHa,CAGb,IAAI,CAAC;IACH,gBAAgB,ECVb,MAAM;GDWV",
+    "sources": [
+        "style768.scss",
+        "elemets.scss"
+    ],
+    "names": [],
+    "file": "style768.css"
+}

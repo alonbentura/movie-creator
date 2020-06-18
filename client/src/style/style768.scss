@@ -1,0 +1,15 @@
+@import "./elemets.scss";
+
+@media (max-width: 768px) {
+  .bla {
+    background-color: yellow;
+  }
+
+  .containerFluid {
+    margin: auto auto 0 0;
+
+    .btn {
+      background-color: $yellow;
+    }
+  }
+}

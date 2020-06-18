@@ -1,0 +1,12 @@
+@media (max-width: 768px) {
+  .bla {
+    background-color: yellow;
+  }
+  .containerFluid {
+    margin: auto auto 0 0;
+  }
+  .containerFluid .btn {
+    background-color: yellow;
+  }
+}
+/*# sourceMappingURL=style768.css.map */

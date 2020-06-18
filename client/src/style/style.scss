@@ -1,0 +1,45 @@
+@import "style768";
+@import "./elemets.scss";
+@import "./resets.scss";
+
+@media (min-width: 768px) {
+  body {
+    header {
+      background-color: red;
+    }
+    .bla {
+      background-color: salmon;
+    }
+    .h1 {
+      color: slateblue;
+    }
+
+    p {
+      color: springgreen;
+    }
+    input {
+      font-size: 1.5em;
+      
+    }
+    .loginPage {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      .container {
+        margin: auto auto;
+        max-width: 300px;
+        display: flex;
+        flex-direction: column;
+      }
+    }
+
+    .btn {
+      background-color: $green;
+      max-width: 300px;
+      height: 30px;
+      font-size: 2em;
+    }
+  }
+}
