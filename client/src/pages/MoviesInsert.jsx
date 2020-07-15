@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import api from "../api";
 import {
   Title,
@@ -10,7 +10,7 @@ import {
 } from "../style/index";
 import { useState } from "react";
 
-const MoviesInsert = () => {
+const MoviesInsert = (props) => {
   const [movie, setMovie] = useState({
     name: "",
     rating: "",
@@ -18,7 +18,6 @@ const MoviesInsert = () => {
     time: "",
   });
 
-  console.log(movie);
 
   const handleChangeInput = async (event) => {
     const value = event.target.value;
@@ -40,7 +39,10 @@ const MoviesInsert = () => {
         time: "",
       });
     });
-  };
+
+    props.history.push("/movies/list")
+
+    };
 
   return (
     <Wrapper>

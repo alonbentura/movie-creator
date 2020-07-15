@@ -71,7 +71,6 @@ const MoviesUpdate = (props) => {
 
   return (
     <div className="bla">
-      <h1>dsfjksdfds</h1>
       <Wrapper>
         <Title>Update Movie Details</Title>
         <Label>Name: </Label>

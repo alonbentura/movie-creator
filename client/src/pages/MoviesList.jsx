@@ -115,7 +115,7 @@ class MoviesList extends Component {
 
     return (
       <ListWrapper>
-        {showTable && (
+        {showTable ? (
           <ReactTable
             data={movies}
             columns={columns}
@@ -124,7 +124,14 @@ class MoviesList extends Component {
             showPageSizeOptions={true}
             minRows={0}
           />
-        )}
+          )
+
+         :<div>
+           <div>there is now movies!!!</div>
+<div>if you want to create on click </div>
+<a href="/movies/create">here</a>
+         </div> 
+        }
       </ListWrapper>
     );
   }
