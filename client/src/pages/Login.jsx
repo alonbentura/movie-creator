@@ -7,7 +7,6 @@ const [password , setPass] = useState({});
 const [userName , setUserName] = useState({});
 
 
-console.log(props)
 
 const sumbit = () =>{
 props.history.push("/movies/list")

@@ -28,18 +28,6 @@ const MoviesUpdate = (props) => {
     }));
   };
 
-  const handleChangeInputRating = async (event) => {
-    const rating = event.target.validity.valid
-      ? event.target.value
-      : this.state.rating;
-
-    this.setState({ rating });
-  };
-
-  const handleChangeInputTime = async (event) => {
-    const time = event.target.value;
-    this.setState({ time });
-  };
 
   const handleUpdateMovie = async () => {
     const { id, name, rating, time, priorety } = this.state;

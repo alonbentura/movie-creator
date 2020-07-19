@@ -48,12 +48,17 @@ class MoviesList extends Component {
   componentDidMount = async () => {
     this.setState({ isLoading: true });
 
-    await api.getAllMovies().then((movies) => {
+    await api.getAllMovies().then((res) => {
+			console.log(res.data.data[0].movies)
       this.setState({
-        movies: movies.data.data,
+        movies: res.data.data[0].movies,
         isLoading: false,
       });
     });
+  };
+
+  addMovie = () => {
+    this.props.history.push("/movie/create");
   };
 
   render() {
@@ -116,22 +121,25 @@ class MoviesList extends Component {
     return (
       <ListWrapper>
         {showTable ? (
-          <ReactTable
-            data={movies}
-            columns={columns}
-            loading={isLoading}
-            defaultPageSize={10}
-            showPageSizeOptions={true}
-            minRows={0}
-          />
-          )
+          <React.Fragment>
+            <ReactTable
+              data={movies}
+              columns={columns}
+              loading={isLoading}
+              defaultPageSize={10}
+              showPageSizeOptions={true}
+              minRows={0}
+            />
 
-         :<div>
-           <div>there is now movies!!!</div>
-<div>if you want to create on click </div>
-<a href="/movies/create">here</a>
-         </div> 
-        }
+            <button onClick={this.addMovie}>Add a Movie</button>
+          </React.Fragment>
+        ) : (
+          <div>
+            <div>there is no movies!!!</div>
+            <div>if you want to create on click </div>
+            <a href="/movie/create">here</a>
+          </div>
+        )}
       </ListWrapper>
     );
   }
