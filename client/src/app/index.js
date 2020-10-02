@@ -4,13 +4,15 @@ import { NavBar } from "../components";
 import { MoviesList, MoviesInsert, MoviesUpdate } from "../pages";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Login from "../pages/Login";
+import SignUp from "../pages/SignUp";
 
 function App() {
   return (
     <Router>
       {/* <NavBar /> */}
       <Switch>
-        <Route path="/" exact component={Login}></Route>
+        <Route path="/" exact component={SignUp}></Route>
+        <Route path="/login" exact component={Login}></Route>
         <Route path="/movies/list" exact component={MoviesList} />
         <Route path="/movie/create" exact component={MoviesInsert} />
         <Route path="/movies/update/:id" exact component={MoviesUpdate} />

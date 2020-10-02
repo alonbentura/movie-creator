@@ -11,11 +11,12 @@ const Movie = new Schema(
   { timestamps: true }
 );
 
-const users = new Schema({
+const User = new Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   email: { type: String, required: true },
+  password: { type: String, required: true },
   movies: [Movie],
 });
 
-module.exports = mongoose.model("user", users);
+module.exports = mongoose.model("user", User);

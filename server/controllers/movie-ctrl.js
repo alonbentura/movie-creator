@@ -1,5 +1,6 @@
 const Movie = require("../models/movie-model");
 const User = require("../models/movie-model");
+var bcrypt = require("bcrypt");
 
 createMovie = (req, res) => {
   const body = req.body;
@@ -118,6 +119,110 @@ getUser = async (req, res) => {
   }).catch((err) => console.log(err));
 };
 
+createUser = async (req, res) => {
+  var newUser = new User(req.body);
+  var saltRouds = 10;
+  await User.findOne({ email: newUser.email })
+    .then(async (profile) => {
+      if (!profile) {
+        console.log("no profile"),
+          bcrypt.hash(newUser.password, saltRouds, (err, hash) => {
+            if (err) {
+              console.log("Error is", err.message);
+            } else {
+              newUser.password = hash;
+              newUser
+                .save()
+                .then(() => {
+                  res.status(200).send(newUser);
+                })
+                .catch((err) => {
+                  console.log("Error is ", err.message);
+                });
+            }
+          });
+      } else {
+        res.send("User already exists...");
+      }
+    })
+    .catch((err) => {
+      console.log("Error is", err.message);
+    });
+};
+
+checkUser = async (req, res) => {
+  var newUser = {};
+  newUser.email = req.body.email;
+  newUser.password = req.body.password;
+
+  await User.findOne({ email: newUser.email })
+    .then((profile) => {
+      if (!profile) {
+        res.send("User not exist");
+      } else {
+        bcrypt.compare(
+          newUser.password,
+          profile.password,
+          async (err, result) => {
+            if (err) {
+              console.log("Error is", err.message);
+            } else if (result == true) {
+              res.send(profile.id);
+            } else {
+              res.send("User Unauthorized Access");
+            }
+          }
+        );
+      }
+    })
+    .catch((err) => {
+      console.log("Error is ", err.message);
+    });
+};
+
+
+/*
+
+    await User.findOne({ name: newUser.name })
+    .then(profile => {
+      if (!profile) {
+        res.send("User not exist");
+      } else {
+        bcrypt.compare(
+          newUser.password,
+          profile.password,
+          async (err, result) => {
+            if (err) {
+              console.log("Error is", err.message);
+            } else if (result == true) {
+              //   res.send("User authenticated");
+              const payload = {
+                id: profile.id,
+                name: profile.name
+              };
+              jsonwt.sign(
+                payload,
+                key.secret,
+                { expiresIn: 3600 },
+                (err, token) => {
+                  res.json({
+                    success: true,
+                    token: "Bearer " + token
+                  });
+                }
+              );
+            } else {
+              res.send("User Unauthorized Access");
+            }
+          }
+        );
+      }
+    })
+    .catch(err => {
+      console.log("Error is ", err.message);
+    }); */
+    
+
 module.exports = {
   createMovie,
   updateMovie,
@@ -125,4 +230,6 @@ module.exports = {
   getMovies,
   getMovieById,
   getUser,
+  createUser,
+  checkUser,
 };
