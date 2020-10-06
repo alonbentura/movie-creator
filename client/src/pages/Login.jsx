@@ -7,9 +7,13 @@ const Login = (props) => {
   const [password, setPass] = useState({});
   const [email, setEmail] = useState({});
 
-  const sumbit = () => {
-    api.checkUser({ email, password });
-    // props.history.push("/movies/list")
+  const sumbit = async () => {
+    await api.getUser({ email, password }).then((res) => {
+      localStorage.setItem("id_token", res.data.token);
+      props.history.push("/movies/list", res.data.user);
+    });
+    // if (localStorage.getItem("id_token")) {
+    // }
   };
 
   return (

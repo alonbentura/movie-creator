@@ -1,38 +1,42 @@
+const User = require("../models/user-model");
 const Movie = require("../models/movie-model");
-const User = require("../models/movie-model");
 var bcrypt = require("bcrypt");
+var jsonwt = require("jsonwebtoken");
+var key = require("../db/myUrl");
 
-createMovie = (req, res) => {
-  const body = req.body;
-
-  if (!body) {
-    return res.status(400).json({
-      success: false,
-      error: "You must provide a movie",
-    });
-  }
-
-  const movie = new Movie(body);
-
-  if (!movie) {
-    return res.status(400).json({ success: false, error: err });
-  }
-
-  movie
-    .save()
-    .then(() => {
-      return res.status(201).json({
-        success: true,
-        id: movie._id,
-        message: "Movie created!",
-      });
-    })
-    .catch((error) => {
-      return res.status(400).json({
-        error,
-        message: "Movie not created!",
-      });
-    });
+createMovie = async (req, res) => {
+  const movieDetails = req.body.movie;
+  const userId = req.body.userId;
+  // if (!movie) {
+  //   return res.status(400).json({
+  //     success: false,
+  //     error: "You must provide a movie",
+  //   });
+  // }
+  await User.findOne({ _id: userId } , ( err , user) => {
+    const movie = new Movie(movieDetails);
+    const newMovies = user.movies.push(movie);
+    if (!movie) {
+      return res.status(400).json({ success: false, error: err });
+    } else {
+      // user.movies = newMovies;
+      movie.save()
+      .then(() => {
+        debugger;
+          return res.status(201).json({
+            success: true,
+            movie,
+            message: "Movie created!",
+          });
+        })
+        .catch((error) => {
+          return res.status(400).json({
+            error,
+            message: "Movie not created!",
+          });
+        });
+    }
+  });
 };
 
 updateMovie = async (req, res) => {
@@ -89,7 +93,7 @@ deleteMovie = async (req, res) => {
 };
 
 getMovieById = async (req, res) => {
-  await Movie.findOne({ _id: req.params.id }, (err, movie) => {
+  await User.findOne({ _id: req.params.id }, (err, movie) => {
     if (err) {
       return res.status(400).json({ success: false, error: err });
     }
@@ -107,15 +111,6 @@ getMovies = async (req, res) => {
       return res.status(404).json({ success: false, error: `Movie not found` });
     }
     return res.status(200).json({ success: true, data: movies });
-  }).catch((err) => console.log(err));
-};
-
-getUser = async (req, res) => {
-  await User.find({}, (err, user) => {
-    if (err) {
-      return res.status(400).json({ success: false, error: err });
-    }
-    return res.status(200).json({ success: true, data: user });
   }).catch((err) => console.log(err));
 };
 
@@ -150,7 +145,7 @@ createUser = async (req, res) => {
     });
 };
 
-checkUser = async (req, res) => {
+getUser = async (req, res) => {
   var newUser = {};
   newUser.email = req.body.email;
   newUser.password = req.body.password;
@@ -167,7 +162,24 @@ checkUser = async (req, res) => {
             if (err) {
               console.log("Error is", err.message);
             } else if (result == true) {
-              res.send(profile.id);
+              //   res.send("User authenticated");
+              const payload = {
+                id: profile.id,
+                email: profile.email,
+              };
+              jsonwt.sign(
+                payload,
+                key.secret,
+                { expiresIn: 3600 },
+                (err, token) => {
+                  delete profile.password;
+                  res.json({
+                    success: true,
+                    token: token,
+                    user: profile,
+                  });
+                }
+              );
             } else {
               res.send("User Unauthorized Access");
             }
@@ -180,56 +192,12 @@ checkUser = async (req, res) => {
     });
 };
 
-
-/*
-
-    await User.findOne({ name: newUser.name })
-    .then(profile => {
-      if (!profile) {
-        res.send("User not exist");
-      } else {
-        bcrypt.compare(
-          newUser.password,
-          profile.password,
-          async (err, result) => {
-            if (err) {
-              console.log("Error is", err.message);
-            } else if (result == true) {
-              //   res.send("User authenticated");
-              const payload = {
-                id: profile.id,
-                name: profile.name
-              };
-              jsonwt.sign(
-                payload,
-                key.secret,
-                { expiresIn: 3600 },
-                (err, token) => {
-                  res.json({
-                    success: true,
-                    token: "Bearer " + token
-                  });
-                }
-              );
-            } else {
-              res.send("User Unauthorized Access");
-            }
-          }
-        );
-      }
-    })
-    .catch(err => {
-      console.log("Error is ", err.message);
-    }); */
-    
-
 module.exports = {
   createMovie,
   updateMovie,
   deleteMovie,
   getMovies,
   getMovieById,
-  getUser,
   createUser,
-  checkUser,
+  getUser,
 };

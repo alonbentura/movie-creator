@@ -9,10 +9,9 @@ export const getAllMovies = () => api.get(`/user`);
 export const updateMovieById = (id, payload) =>
   api.put(`/movie/${id}`, payload);
 export const deleteMovieById = (id) => api.delete(`/movie/${id}`);
-export const getMovieById = (id) => api.get(`/movie/${id}`);
-export const insertUser = (payload) => api.post("user" , payload);
-export const checkUser = (payload) => api.post("loginUser" , payload);
-
+export const getMovieById = (id) => api.get(`movie/${id}`);
+export const insertUser = (payload) => api.post("user", payload);
+export const getUser = (payload) => api.post("getUser", payload);
 
 const apis = {
   insertMovie,
@@ -21,7 +20,7 @@ const apis = {
   deleteMovieById,
   getMovieById,
   insertUser,
-  checkUser
+  getUser,
 };
 
 export default apis;

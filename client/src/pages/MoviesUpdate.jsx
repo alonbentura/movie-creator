@@ -11,6 +11,7 @@ import {
 import "../style/style.scss";
 
 const MoviesUpdate = (props) => {
+  console.log(props)
   const [movie, setMovie] = useState({
     id: props.match.params.id,
     name: "",
@@ -24,10 +25,10 @@ const MoviesUpdate = (props) => {
     const inputname = event.target.name;
     setMovie((prevState) => ({
       ...prevState,
+      id: props.match.params.id,
       [inputname]: value,
     }));
   };
-
 
   const handleUpdateMovie = async () => {
     const { id, name, rating, time, priorety } = this.state;
@@ -36,19 +37,12 @@ const MoviesUpdate = (props) => {
 
     await api.updateMovieById(id, payload).then((res) => {
       window.alert(`Movie updated successfully`);
-      this.setState({
-        name: "",
-        rating: "",
-        time: "",
-        priorety: "",
-      });
     });
   };
 
   useEffect(async () => {
-    const { id } = props.match.params.id;
+    const { id } = props
     const movie = await api.getMovieById(id);
-
     setMovie({
       name: movie.data.data.name,
       priorety: movie.data.data.priorety,

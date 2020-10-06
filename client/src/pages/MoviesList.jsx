@@ -5,10 +5,20 @@ import { ListWrapper, Update, Delete } from "../style/index";
 import "react-table/react-table.css";
 
 class UpdateMovie extends Component {
-  updateUser = (event) => {
-    event.preventDefault();
+  constructor(props) {
+    super(props);
+  }
 
-    window.location.href = `/movies/update/${this.props.id}`;
+  updateUser = (event) => {
+    console.log(this.props)
+    debugger;
+    const { movie } = this.props;
+    event.preventDefault();
+    this.props.history.push(
+      `/user/${this.props.userId}/movie/update/${(movie.id)}`,
+      movie
+    );
+    // window.location.href = ;
   };
 
   render() {
@@ -39,29 +49,20 @@ class MoviesList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      movies: [],
+      movies: this.props.location.state.movies,
+      userId: this.props.location.state._id,
       columns: [],
       isLoading: false,
     };
   }
 
-  componentDidMount = async () => {
-    this.setState({ isLoading: true });
-
-    await api.getAllMovies().then((res) => {
-      this.setState({
-        movies: res.data.data[0].movies,
-        isLoading: false,
-      });
-    });
-  };
-
   addMovie = () => {
-    this.props.history.push("/movie/create");
+    this.props.history.push("/movie/create" , this.state.userId);
   };
 
   render() {
-    const { movies, isLoading } = this.state;
+    const { movies, isLoading, userId } = this.state;
+    const {history} = this.props
     const columns = [
       {
         Header: "ID",
@@ -105,7 +106,7 @@ class MoviesList extends Component {
         Cell: function (props) {
           return (
             <span>
-              <UpdateMovie id={props.original._id} />
+              <UpdateMovie movie={props.original} userId={userId} history={history} />
             </span>
           );
         },
@@ -127,6 +128,7 @@ class MoviesList extends Component {
               defaultPageSize={10}
               showPageSizeOptions={true}
               minRows={0}
+              userId={this.state.userId}
             />
 
             <button onClick={this.addMovie}>Add a Movie</button>

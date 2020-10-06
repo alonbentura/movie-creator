@@ -10,13 +10,12 @@ const apiPort = 3001;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(bodyParser.json());
-
-// app.use(passport.initialize());
-// app.use(passport.session());
-
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
-
-// require("./strategies/jsonwtStrategy")(passport);
 app.use("/api", movieRouter);
+//Passport middleware
+app.use(passport.initialize());
+
+//Config for JWT strategy
+require("./strategies/jsonwtStrategy")(passport);
 
 app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));

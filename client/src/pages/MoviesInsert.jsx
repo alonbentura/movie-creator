@@ -17,7 +17,7 @@ const MoviesInsert = (props) => {
     priorety: "",
     time: "",
   });
-
+  const [userId, setUserId] = useState(props.location.state);
 
   const handleChangeInput = async (event) => {
     const value = event.target.value;
@@ -29,7 +29,7 @@ const MoviesInsert = (props) => {
   };
 
   const handleIncludeMovie = async () => {
-    const payload = { ...movie };
+    const payload = { userId, movie:movie };
     await api.insertMovie(payload).then((res) => {
       window.alert(`Movie inserted successfully`);
       setMovie({
@@ -40,9 +40,8 @@ const MoviesInsert = (props) => {
       });
     });
 
-    props.history.push("/movies/list")
-
-    };
+    props.history.push("/movies/list");
+  };
 
   return (
     <Wrapper>
