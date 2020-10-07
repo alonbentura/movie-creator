@@ -8,12 +8,7 @@ const User = new Schema({
   lastName: { type: String, required: true },
   email: { type: String, required: true },
   password: { type: String, required: true },
-  movies: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "movie",
-    },
-  ],
+  movies: [Movie],
 });
 
 module.exports = mongoose.model("user", User);

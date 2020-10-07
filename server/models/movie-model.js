@@ -8,4 +8,4 @@ var Movie = new Schema({
   priorety: { type: Number, required: true },
 });
 
-module.exports = mongoose.model("movie", Movie);
+module.exports = Movie;

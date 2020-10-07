@@ -1,41 +1,29 @@
-const User = require("../models/user-model");
-const Movie = require("../models/movie-model");
+var User = require("../models/user-model");
+var Movie = require("../models/movie-model");
 var bcrypt = require("bcrypt");
 var jsonwt = require("jsonwebtoken");
 var key = require("../db/myUrl");
 
 createMovie = async (req, res) => {
   const movieDetails = req.body.movie;
-  const userId = req.body.userId;
-  // if (!movie) {
-  //   return res.status(400).json({
-  //     success: false,
-  //     error: "You must provide a movie",
-  //   });
-  // }
-  await User.findOne({ _id: userId } , ( err , user) => {
-    const movie = new Movie(movieDetails);
-    const newMovies = user.movies.push(movie);
-    if (!movie) {
-      return res.status(400).json({ success: false, error: err });
-    } else {
-      // user.movies = newMovies;
-      movie.save()
-      .then(() => {
-        debugger;
-          return res.status(201).json({
-            success: true,
-            movie,
-            message: "Movie created!",
-          });
-        })
-        .catch((error) => {
-          return res.status(400).json({
-            error,
-            message: "Movie not created!",
-          });
+  const userId = req.user.id;
+  await User.findOne({ _id: userId }, (err, user) => {
+    user.movies.push(movieDetails);
+    user
+      .save()
+      .then((result) => {
+        return res.status(201).json({
+          success: true,
+          // movie,
+          message: "Movie created!",
         });
-    }
+      })
+      .catch((error) => {
+        return res.status(400).json({
+          error,
+          message: "Movie not created!",
+        });
+      });
   });
 };
 
@@ -92,24 +80,15 @@ deleteMovie = async (req, res) => {
   }).catch((err) => console.log(err));
 };
 
-getMovieById = async (req, res) => {
-  await User.findOne({ _id: req.params.id }, (err, movie) => {
+getUserMovies = async (req, res) => {
+  await User.findOne({ _id: req.user.id }, (err, user) => {
     if (err) {
       return res.status(400).json({ success: false, error: err });
     }
-
-    return res.status(200).json({ success: true, data: movie });
-  }).catch((err) => console.log(err));
-};
-
-getMovies = async (req, res) => {
-  await Movie.find({}, (err, movies) => {
-    if (err) {
-      return res.status(400).json({ success: false, error: err });
-    }
-    if (!movies.length) {
+    if (!user.movies) {
       return res.status(404).json({ success: false, error: `Movie not found` });
     }
+    const movies = user.movies;
     return res.status(200).json({ success: true, data: movies });
   }).catch((err) => console.log(err));
 };
@@ -170,7 +149,7 @@ getUser = async (req, res) => {
               jsonwt.sign(
                 payload,
                 key.secret,
-                { expiresIn: 3600 },
+                { expiresIn: 1000000 },
                 (err, token) => {
                   delete profile.password;
                   res.json({
@@ -196,8 +175,7 @@ module.exports = {
   createMovie,
   updateMovie,
   deleteMovie,
-  getMovies,
-  getMovieById,
+  getUserMovies,
   createUser,
   getUser,
 };

@@ -11,7 +11,6 @@ import {
 import "../style/style.scss";
 
 const MoviesUpdate = (props) => {
-  console.log(props)
   const [movie, setMovie] = useState({
     id: props.match.params.id,
     name: "",
@@ -41,7 +40,7 @@ const MoviesUpdate = (props) => {
   };
 
   useEffect(async () => {
-    const { id } = props
+    const { id } = props;
     const movie = await api.getMovieById(id);
     setMovie({
       name: movie.data.data.name,

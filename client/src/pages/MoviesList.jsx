@@ -10,12 +10,10 @@ class UpdateMovie extends Component {
   }
 
   updateUser = (event) => {
-    console.log(this.props)
-    debugger;
     const { movie } = this.props;
     event.preventDefault();
     this.props.history.push(
-      `/user/${this.props.userId}/movie/update/${(movie.id)}`,
+      `/user/${this.props.userId}/movie/update/${movie.id}`,
       movie
     );
     // window.location.href = ;
@@ -49,20 +47,25 @@ class MoviesList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      movies: this.props.location.state.movies,
-      userId: this.props.location.state._id,
+      movies: [],
       columns: [],
       isLoading: false,
     };
   }
 
+  componentDidMount = () => {
+    api.getUserMovies().then((res) => {
+      this.setState({ movies: res.data.data });
+    });
+  };
+
   addMovie = () => {
-    this.props.history.push("/movie/create" , this.state.userId);
+    this.props.history.push("/movie/create");
   };
 
   render() {
-    const { movies, isLoading, userId } = this.state;
-    const {history} = this.props
+    const { movies, isLoading } = this.state;
+    const { history } = this.props;
     const columns = [
       {
         Header: "ID",
@@ -87,7 +90,7 @@ class MoviesList extends Component {
       {
         Header: "Time",
         accessor: "time",
-        Cell: (props) => <span>{props.value.join(" / ")}</span>,
+        // Cell: (props) => <span>{props.value.join(" / ")}</span>,
       },
       {
         Header: "",
@@ -106,7 +109,7 @@ class MoviesList extends Component {
         Cell: function (props) {
           return (
             <span>
-              <UpdateMovie movie={props.original} userId={userId} history={history} />
+              <UpdateMovie movie={props.original} history={history} />
             </span>
           );
         },
@@ -114,7 +117,7 @@ class MoviesList extends Component {
     ];
 
     let showTable = true;
-    if (!movies.length) {
+    if (!movies) {
       showTable = false;
     }
     return (
