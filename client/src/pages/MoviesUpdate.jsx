@@ -12,43 +12,44 @@ import "../style/style.scss";
 
 const MoviesUpdate = (props) => {
   const [movie, setMovie] = useState({
-    id: props.match.params.id,
+    id: "",
     name: "",
     rating: "",
     time: "",
     priorety: "",
   });
 
+  useEffect(() => {
+    const { name, priorety, rating, time, _id } = props.location.state;
+    setMovie({
+      id: _id,
+      name,
+      priorety,
+      rating,
+      time,
+    });
+  }, []);
+
   const handleChangeInput = async (event) => {
-    const value = event.target.value;
-    const inputname = event.target.name;
+    const { value, name } = event.target;
     setMovie((prevState) => ({
       ...prevState,
-      id: props.match.params.id,
-      [inputname]: value,
+      id: movie.id,
+      [name]: value,
     }));
   };
 
   const handleUpdateMovie = async () => {
-    const { id, name, rating, time, priorety } = this.state;
+    const { id, name, rating, time, priorety } = movie;
     const arrayTime = time.split("/");
-    const payload = { name, rating, time: arrayTime, priorety };
+    const payload = { name, rating, time, priorety };
 
     await api.updateMovieById(id, payload).then((res) => {
-      window.alert(`Movie updated successfully`);
+      window.alert(`Movie updated successfully`)
+      ;
     });
+    props.history.push("/movies/list");
   };
-
-  useEffect(async () => {
-    const { id } = props;
-    const movie = await api.getMovieById(id);
-    setMovie({
-      name: movie.data.data.name,
-      priorety: movie.data.data.priorety,
-      rating: movie.data.data.rating,
-      time: movie.data.data.time.join("/"),
-    });
-  });
 
   return (
     <div className="bla">
@@ -58,17 +59,18 @@ const MoviesUpdate = (props) => {
         <InputText
           type="text"
           name="name"
-          value={movie.name}
+          defaultValue={movie.name}
           onChange={handleChangeInput}
         />
         <Label>Rating: </Label>
         <InputText
           type="number"
           min="0"
+          maxLength="3"
           max="10"
           name="rating"
           pattern="[0-9]+([,\.][0-9]+)?"
-          value={movie.rating}
+          defaultValue={movie.rating}
           onChange={handleChangeInput}
         />
         <Label>priorety: </Label>
@@ -77,15 +79,17 @@ const MoviesUpdate = (props) => {
           type="number"
           min="0"
           max="10"
+          maxLength="3"
           pattern="[0-9]+([,\.][0-9]+)?"
-          value={movie.priorety}
+          defaultValue={movie.priorety}
           onChange={handleChangeInput}
         />
         <Label>Time: </Label>
         <InputText
           type="text"
           name="time"
-          value={movie.time}
+          maxLength="4"
+          defaultValue={movie.time}
           onChange={handleChangeInput}
         />
 

@@ -15,9 +15,9 @@ function App() {
         <Route path="/" exact component={SignUp}></Route>
         <Route path="/login" exact component={Login}></Route>
         {/* <PrivateRoute> */}
-          <Route path="/movies/list" exact component={MoviesList} />
-          <Route path="/movie/create" exact component={MoviesInsert} />
-          <Route path="/user/:id/movie/update/:id"  component={MoviesUpdate} />
+        <Route path="/movies/list" exact component={MoviesList} />
+        <Route path="/movie/create" exact component={MoviesInsert} />
+        <Route path="/user/movie/update" component={MoviesUpdate} />
         {/* </PrivateRoute> */}
       </Switch>
     </Router>

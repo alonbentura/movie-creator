@@ -12,10 +12,7 @@ class UpdateMovie extends Component {
   updateUser = (event) => {
     const { movie } = this.props;
     event.preventDefault();
-    this.props.history.push(
-      `/user/${this.props.userId}/movie/update/${movie.id}`,
-      movie
-    );
+    this.props.history.push(`/user/movie/update/`, movie);
     // window.location.href = ;
   };
 
@@ -25,7 +22,7 @@ class UpdateMovie extends Component {
 }
 
 class DeleteMovie extends Component {
-  deleteUser = (event) => {
+  deleteUser = async (event) => {
     event.preventDefault();
 
     if (
@@ -33,7 +30,7 @@ class DeleteMovie extends Component {
         `Do tou want to delete the movie ${this.props.id} permanently?`
       )
     ) {
-      api.deleteMovieById(this.props.id);
+      await api.deleteMovieById(this.props.id);
       window.location.reload();
     }
   };

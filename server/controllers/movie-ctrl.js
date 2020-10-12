@@ -29,31 +29,17 @@ createMovie = async (req, res) => {
 
 updateMovie = async (req, res) => {
   const body = req.body;
-
-  if (!body) {
-    return res.status(400).json({
-      success: false,
-      error: "You must provide a body to update",
-    });
-  }
-
-  Movie.findOne({ _id: req.params.id }, (err, movie) => {
-    if (err) {
-      return res.status(404).json({
-        err,
-        message: "Movie not found!",
-      });
-    }
-    movie.priorety = body.priorety;
-    movie.name = body.name;
-    movie.time = body.time;
-    movie.rating = body.rating;
-    movie
+  const newMovie = req.body;
+  newMovie.time.toString();
+  await User.findOne({ _id: req.user.id }, (err, user) => {
+    const index = user.movies.findIndex((movie) => movie.id === req.params.id);
+    user.movies[index] = newMovie;
+    user
       .save()
       .then(() => {
         return res.status(200).json({
           success: true,
-          id: movie._id,
+          id: req.params.id,
           message: "Movie updated!",
         });
       })
@@ -67,17 +53,20 @@ updateMovie = async (req, res) => {
 };
 
 deleteMovie = async (req, res) => {
-  await Movie.findOneAndDelete({ _id: req.params.id }, (err, movie) => {
+  const userId = req.user.id;
+  await User.findOne({ _id: userId }, (err, user) => {
+    const index = user.movies.findIndex((movie) => movie.id === req.params.id);
     if (err) {
       return res.status(400).json({ success: false, error: err });
     }
-
-    if (!movie) {
-      return res.status(404).json({ success: false, error: `Movie not found` });
-    }
-
-    return res.status(200).json({ success: true, data: movie });
-  }).catch((err) => console.log(err));
+    user.movies.splice(index, 1);
+    user
+      .save()
+      .then(() => {
+        return res.status(200).json({ success: true, data: user.movies });
+      })
+      .catch((err) => console.log(err));
+  });
 };
 
 getUserMovies = async (req, res) => {
@@ -99,7 +88,6 @@ createUser = async (req, res) => {
   await User.findOne({ email: newUser.email })
     .then(async (profile) => {
       if (!profile) {
-        console.log("no profile"),
           bcrypt.hash(newUser.password, saltRouds, (err, hash) => {
             if (err) {
               console.log("Error is", err.message);

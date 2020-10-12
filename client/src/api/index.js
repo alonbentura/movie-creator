@@ -9,8 +9,8 @@ const config = { headers: { Authorization: `Bearer ${token}` } };
 export const insertMovie = (payload) => api.post(`/movie`, payload, config);
 export const getAllMovies = () => api.get(`/user`);
 export const updateMovieById = (id, payload) =>
-  api.put(`/movie/${id}`, payload);
-export const deleteMovieById = (id) => api.delete(`/movie/${id}`);
+  api.put(`/movie/${id}`, payload, config);
+export const deleteMovieById = (id) => api.delete(`/movie/${id}`, config);
 export const getUserMovies = () => api.get("/user/movies", config);
 export const insertUser = (payload) => api.post("user", payload);
 export const getUser = (payload) => api.post("getUser", payload);

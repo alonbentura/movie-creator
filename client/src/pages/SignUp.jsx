@@ -10,8 +10,9 @@ const SignUp = (props) => {
   const [email, setEmail] = useState({});
 
   const sumbit = () => {
-    api.insertUser({ email, firstName, lastName, password });
-    // props.history.push("/movies/list")
+    api
+      .insertUser({ email, firstName, lastName, password })
+      .then((res) => props.history.push("/login"));
   };
 
   return (

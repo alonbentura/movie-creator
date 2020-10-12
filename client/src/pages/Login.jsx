@@ -10,8 +10,8 @@ const Login = (props) => {
   const sumbit = async () => {
     await api.getUser({ email, password }).then((res) => {
       localStorage.setItem("id_token", res.data.token);
-      props.history.push("/movies/list", res.data.user);
     });
+    props.history.push("/movies/list");
     // if (localStorage.getItem("id_token")) {
     // }
   };
