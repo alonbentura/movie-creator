@@ -3,23 +3,17 @@ import ReactTable from "react-table";
 import api from "../api";
 import { ListWrapper, Update, Delete } from "../style/index";
 import "react-table/react-table.css";
+import { useState, useEffect } from "react";
 
-class UpdateMovie extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  updateUser = (event) => {
+const UpdateMovie = (props) => {
+  const updateUser = (event) => {
     const { movie } = this.props;
     event.preventDefault();
-    this.props.history.push(`/user/movie/update/`, movie);
-    // window.location.href = ;
+    props.history.push(`/user/movie/update/`, movie);
   };
 
-  render() {
-    return <Update onClick={this.updateUser}>Update</Update>;
-  }
-}
+  return <Update onClick={updateUser}>Update</Update>;
+};
 
 class DeleteMovie extends Component {
   deleteUser = async (event) => {
@@ -40,109 +34,98 @@ class DeleteMovie extends Component {
   }
 }
 
-class MoviesList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      movies: [],
-      columns: [],
-      isLoading: false,
-    };
-  }
+const MoviesList = (props) => {
+  const [movies, setMovies] = useState([]);
+  const [isLoading, setLoading] = useState(false);
 
-  componentDidMount = () => {
+  useEffect(() => {
     api.getUserMovies().then((res) => {
-      this.setState({ movies: res.data.data });
+      setMovies(res.data.data);
     });
+  }, []);
+
+  const addMovie = () => {
+    props.history.push("/movie/create");
   };
+  const columns = [
+    {
+      Header: "ID",
+      accessor: "_id",
+      filterable: true,
+    },
+    {
+      Header: "Name",
+      accessor: "name",
+      filterable: true,
+    },
+    {
+      Header: "Rating",
+      accessor: "rating",
+      filterable: true,
+    },
+    {
+      Header: "Priorety",
+      accessor: "priorety",
+      filterable: true,
+    },
+    {
+      Header: "Time",
+      accessor: "time",
+      // Cell: (props) => <span>{props.value.join(" / ")}</span>,
+    },
+    {
+      Header: "",
+      accessor: "",
+      Cell: function (props) {
+        return (
+          <span>
+            <DeleteMovie id={props.original._id} />
+          </span>
+        );
+      },
+    },
+    {
+      Header: "",
+      accessor: "",
+      Cell: function (props) {
+        return (
+          <span>
+            <UpdateMovie movie={props.original} history={props.history} />
+          </span>
+        );
+      },
+    },
+  ];
 
-  addMovie = () => {
-    this.props.history.push("/movie/create");
-  };
-
-  render() {
-    const { movies, isLoading } = this.state;
-    const { history } = this.props;
-    const columns = [
-      {
-        Header: "ID",
-        accessor: "_id",
-        filterable: true,
-      },
-      {
-        Header: "Name",
-        accessor: "name",
-        filterable: true,
-      },
-      {
-        Header: "Rating",
-        accessor: "rating",
-        filterable: true,
-      },
-      {
-        Header: "Priorety",
-        accessor: "priorety",
-        filterable: true,
-      },
-      {
-        Header: "Time",
-        accessor: "time",
-        // Cell: (props) => <span>{props.value.join(" / ")}</span>,
-      },
-      {
-        Header: "",
-        accessor: "",
-        Cell: function (props) {
-          return (
-            <span>
-              <DeleteMovie id={props.original._id} />
-            </span>
-          );
-        },
-      },
-      {
-        Header: "",
-        accessor: "",
-        Cell: function (props) {
-          return (
-            <span>
-              <UpdateMovie movie={props.original} history={history} />
-            </span>
-          );
-        },
-      },
-    ];
-
-    let showTable = true;
-    if (!movies) {
-      showTable = false;
-    }
-    return (
-      <ListWrapper>
-        {showTable ? (
-          <React.Fragment>
-            <ReactTable
-              data={movies}
-              columns={columns}
-              loading={isLoading}
-              defaultPageSize={10}
-              showPageSizeOptions={true}
-              minRows={0}
-              userId={this.state.userId}
-            />
-
-            <button onClick={this.addMovie}>Add a Movie</button>
-          </React.Fragment>
-        ) : (
-          <div>
-            <div>there is no movies!!!</div>
-            <div>if you want to create on click </div>
-            <a href="/movie/create">here</a>
-          </div>
-        )}
-      </ListWrapper>
-    );
+  let showTable = true;
+  if (!movies) {
+    showTable = false;
   }
-}
+  return (
+    <ListWrapper>
+      {showTable ? (
+        <React.Fragment>
+          <ReactTable
+            data={movies}
+            columns={columns}
+            loading={isLoading}
+            defaultPageSize={10}
+            showPageSizeOptions={true}
+            minRows={0}
+            // userId={this.state.userId}
+          />
+
+          <button onClick={addMovie}>Add a Movie</button>
+        </React.Fragment>
+      ) : (
+        <div>
+          <div>there is no movies!!!</div>
+          <div>if you want to create on click </div>
+          <a href="/movie/create">here</a>
+        </div>
+      )}
+    </ListWrapper>
+  );
+};
 
 export default MoviesList;
